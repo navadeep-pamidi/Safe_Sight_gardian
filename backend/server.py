@@ -5,8 +5,9 @@ from pydantic import BaseModel
 from datetime import datetime
 import json
 import os
+import urllib.parse
 
-app = FastAPI(title="NEXA Emergency Backend")
+app = FastAPI(title="Safe Sight Guardian Emergency Backend")
 
 # backend/server.py -> project root
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,10 +16,11 @@ VIDEO_FOLDER = os.path.join(BASE_DIR, "emergency_clips")
 DASHBOARD_FOLDER = os.path.join(BASE_DIR, "dashboard")
 PHASE2_FOLDER = os.path.join(BASE_DIR, "phase 2")
 PHASE2_CANDIDATE_FOLDER = os.path.join(PHASE2_FOLDER, "candidate_clips")
+PHASE2_BROWSER_FOLDER = os.path.join(PHASE2_CANDIDATE_FOLDER, "browser_ready")
 PHASE2_EVENTS_FILE = os.path.join(PHASE2_CANDIDATE_FOLDER, "events.jsonl")
 PHASE2_STATUS_FILE = os.path.join(PHASE2_CANDIDATE_FOLDER, "status.json")
 
-for folder in (VIDEO_FOLDER, DASHBOARD_FOLDER, PHASE2_CANDIDATE_FOLDER):
+for folder in (VIDEO_FOLDER, DASHBOARD_FOLDER, PHASE2_CANDIDATE_FOLDER, PHASE2_BROWSER_FOLDER):
     os.makedirs(folder, exist_ok=True)
 
 app.add_middleware(
@@ -58,7 +60,13 @@ def load_phase2_events():
                     filename = os.path.basename(str(event.get("clip_filename") or event.get("clip_path") or ""))
                     if filename and filename.lower().endswith(".mp4") and os.path.isfile(os.path.join(PHASE2_CANDIDATE_FOLDER, filename)):
                         event["clip_filename"] = filename
-                        event["clip_url"] = f"/candidate-clips/{filename}"
+                        browser_filename = os.path.basename(str(event.get("browser_clip_filename") or filename))
+                        browser_path = os.path.join(PHASE2_BROWSER_FOLDER, browser_filename)
+                        if os.path.isfile(browser_path):
+                            event["browser_clip_filename"] = browser_filename
+                            event["clip_url"] = f"/candidate-clips/browser_ready/{urllib.parse.quote(browser_filename)}"
+                        else:
+                            event["clip_url"] = f"/candidate-clips/{urllib.parse.quote(filename)}"
                     else:
                         event["clip_url"] = None
                     event.setdefault("event_type", "PHASE2_CANDIDATE")
@@ -72,7 +80,7 @@ def load_phase2_events():
 
 @app.get("/")
 def home():
-    return {"system": "NEXA Emergency AI", "status": "online", "dashboard": "/dashboard/"}
+    return {"system": "Safe Sight Guardian Emergency AI", "status": "online", "dashboard": "/dashboard/"}
 
 @app.get("/health")
 def health():
@@ -92,7 +100,7 @@ def emergency_alert(data: EmergencyRequest):
     events.append(alert)
     with open(EVENTS_FILE, "w", encoding="utf-8") as f:
         json.dump(events, f, indent=2)
-    print("NEXA Phase 1 emergency received:", alert, flush=True)
+    print("Safe Sight Guardian Phase 1 emergency received:", alert, flush=True)
     return alert
 
 @app.get("/events")

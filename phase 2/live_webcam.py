@@ -386,7 +386,7 @@ def main():
             # On-screen information.
             cv2.putText(
                 frame,
-                "NEXA Phase 2 - VD-MIL Experimental",
+                "Safe Sight Guardian Phase 2 - VD-MIL Experimental",
                 (10, 25),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.58,
@@ -492,7 +492,7 @@ def main():
                     2,
                 )
 
-            cv2.imshow("NEXA Phase 2 - VD-MIL", frame)
+            cv2.imshow("Safe Sight Guardian Phase 2 - VD-MIL", frame)
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break

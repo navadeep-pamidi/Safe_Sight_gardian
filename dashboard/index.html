@@ -1,1540 +1,189 @@
-<!DOCTYPE html>
-
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>NEXA Security Monitor</title>
-
-
-    <style>
-
-        * {
-
-            box-sizing: border-box;
-
-            margin: 0;
-
-            padding: 0;
-
-        }
-
-
-        body {
-
-            background: #0f1219;
-
-            color: #edf2f7;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            min-height: 100vh;
-
-        }
-
-
-        /* HEADER */
-
-        header {
-
-            height: 75px;
-
-            background: #191e28;
-
-            border-bottom:
-                1px solid #303744;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content:
-                space-between;
-
-            padding: 0 35px;
-
-        }
-
-
-        .logo {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 15px;
-
-        }
-
-
-        .logo h1 {
-
-            color: #28d7ff;
-
-            font-size: 26px;
-
-            letter-spacing: 2px;
-
-        }
-
-
-        .logo span {
-
-            color: #8b95a5;
-
-            font-size: 13px;
-
-        }
-
-
-        .online {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-
-            color: #52df8a;
-
-            font-size: 14px;
-
-        }
-
-
-        .online-dot {
-
-            width: 9px;
-
-            height: 9px;
-
-            background: #52df8a;
-
-            border-radius: 50%;
-
-            box-shadow:
-                0 0 10px #52df8a;
-
-        }
-
-
-        /* MAIN */
-
-        main {
-
-            padding: 30px 35px;
-
-        }
-
-
-        .page-title {
-
-            margin-bottom: 25px;
-
-        }
-
-
-        .page-title h2 {
-
-            font-size: 24px;
-
-            margin-bottom: 7px;
-
-        }
-
-
-        .page-title p {
-
-            color: #8993a3;
-
-            font-size: 14px;
-
-        }
-
-
-        /* GRID */
-
-        .grid {
-
-            display: grid;
-
-            grid-template-columns:
-                2fr 1fr;
-
-            gap: 22px;
-
-        }
-
-
-        .card {
-
-            background: #191e28;
-
-            border:
-                1px solid #303744;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-        }
-
-
-        .card-title {
-
-            color: #8e99aa;
-
-            font-size: 13px;
-
-            letter-spacing: 1px;
-
-            margin-bottom: 18px;
-
-        }
-
-
-        /* ALERT */
-
-        .alert-card {
-
-            min-height: 300px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-            align-items: center;
-
-            text-align: center;
-
-        }
-
-
-        .alert-icon {
-
-            width: 85px;
-
-            height: 85px;
-
-            border-radius: 50%;
-
-            background: #242a35;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 40px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .safe {
-
-            color: #52df8a;
-
-        }
-
-
-        .danger {
-
-            color: #ff4d5f;
-
-            text-shadow:
-                0 0 15px
-                rgba(
-                    255,
-                    77,
-                    95,
-                    0.4
-                );
-
-        }
-
-
-        .alert-status {
-
-            font-size: 30px;
-
-            font-weight: bold;
-
-            margin-bottom: 10px;
-
-        }
-
-
-        .alert-message {
-
-            color: #8e99aa;
-
-            font-size: 14px;
-
-        }
-
-
-        /* DETAILS */
-
-        .details {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 12px;
-
-            margin-top: 25px;
-
-            width: 100%;
-
-        }
-
-
-        .detail {
-
-            background: #11151c;
-
-            padding: 15px;
-
-            border-radius: 8px;
-
-            text-align: left;
-
-        }
-
-
-        .detail-label {
-
-            color: #778191;
-
-            font-size: 11px;
-
-            margin-bottom: 6px;
-
-        }
-
-
-        .detail-value {
-
-            font-size: 14px;
-
-            font-weight: bold;
-
-        }
-
-
-        /* SYSTEM */
-
-        .system-row {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content:
-                space-between;
-
-            padding: 15px 0;
-
-            border-bottom:
-                1px solid #292f3a;
-
-        }
-
-
-        .system-row:last-child {
-
-            border-bottom: none;
-
-        }
-
-
-        .system-name {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-        }
-
-
-        .status-dot {
-
-            width: 8px;
-
-            height: 8px;
-
-            border-radius: 50%;
-
-            background: #52df8a;
-
-            box-shadow:
-                0 0 7px #52df8a;
-
-        }
-
-
-        .status-text {
-
-            color: #52df8a;
-
-            font-size: 12px;
-
-        }
-
-
-        /* HISTORY */
-
-        .history {
-
-            margin-top: 22px;
-
-        }
-
-
-        .event {
-
-            background: #11151c;
-
-            border-radius: 8px;
-
-            padding: 16px;
-
-            margin-bottom: 10px;
-
-            border-left:
-                3px solid #ff4d5f;
-
-        }
-
-
-        .event-top {
-
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            margin-bottom: 7px;
-
-        }
-
-
-        .event-name {
-
-            color: #ff4d5f;
-
-            font-weight: bold;
-
-            font-size: 13px;
-
-        }
-
-
-        .event-time {
-
-            color: #778191;
-
-            font-size: 11px;
-
-        }
-
-
-        .event-info {
-
-            color: #8993a3;
-
-            font-size: 12px;
-
-        }
-
-
-        /* VIDEO */
-
-        .video-section {
-
-            display: none;
-
-            margin-top: 22px;
-
-        }
-
-
-        .video-section.active {
-
-            display: block;
-
-        }
-
-
-        .video-container {
-
-            background: #080a0e;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-
-            border:
-                1px solid #303744;
-
-        }
-
-
-        video {
-
-            width: 100%;
-
-            max-height: 600px;
-
-            display: block;
-
-        }
-
-
-        .video-title {
-
-            padding: 15px;
-
-            color: #ff4d5f;
-
-            font-weight: bold;
-
-            font-size: 14px;
-
-        }
-
-
-        /* BUTTON */
-
-        .view-button {
-
-            margin-top: 12px;
-
-            padding: 9px 15px;
-
-            background: #242a35;
-
-            color: #28d7ff;
-
-            border:
-                1px solid #28d7ff;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-        }
-
-
-        .view-button:hover {
-
-            background: #28d7ff;
-
-            color: #0f1219;
-
-        }
-
-
-        /* RESPONSIVE */
-
-        @media (max-width: 850px) {
-
-            .grid {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-
-            header {
-
-                padding: 0 20px;
-
-            }
-
-
-            main {
-
-                padding: 20px;
-
-            }
-
-        }
-
-    
-        /* PHASE 2 CANDIDATE INCIDENTS */
-        .phase2-section {
-            margin-top: 22px;
-        }
-
-        .phase2-note {
-            color: #aeb8c8;
-            font-size: 12px;
-            line-height: 1.6;
-            margin: -6px 0 16px;
-            padding: 11px 13px;
-            background: #242a35;
-            border-left: 3px solid #f0ad4e;
-            border-radius: 6px;
-        }
-
-        .candidate-event {
-            background: #11151c;
-            border: 1px solid #303744;
-            border-left: 3px solid #f0ad4e;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .candidate-event-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-
-        .candidate-name {
-            color: #f0ad4e;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .candidate-time {
-            color: #8993a3;
-            font-size: 11px;
-        }
-
-        .candidate-metrics {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            margin: 12px 0;
-        }
-
-        .candidate-metric {
-            background: #191e28;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .candidate-metric-label {
-            color: #8993a3;
-            font-size: 10px;
-            margin-bottom: 5px;
-        }
-
-        .candidate-metric-value {
-            color: #edf2f7;
-            font-size: 15px;
-            font-weight: bold;
-            overflow-wrap: anywhere;
-        }
-
-        .review-badge {
-            display: inline-block;
-            color: #f0ad4e;
-            background: rgba(240, 173, 78, 0.12);
-            border: 1px solid rgba(240, 173, 78, 0.4);
-            border-radius: 20px;
-            padding: 5px 9px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-top: 4px;
-        }
-
-        .candidate-video {
-            width: 100%;
-            max-height: 420px;
-            display: block;
-            margin-top: 12px;
-            background: #080a0e;
-            border: 1px solid #303744;
-            border-radius: 8px;
-        }
-
-        .candidate-empty {
-            color: #8993a3;
-            font-size: 13px;
-            padding: 14px 0;
-        }
-
-        @media (max-width: 600px) {
-            .candidate-metrics {
-                grid-template-columns: 1fr;
-            }
-        }
-
-    </style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e18">
+  <title>Safe Sight Guardian · Command Center</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
-
-
 <body>
-
-
-<!-- =========================================================
-     HEADER
-========================================================= -->
-
-<header>
-
-
-    <div class="logo">
-
-        <h1>NEXA</h1>
-
-        <span>
-            SECURITY MONITOR
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview" aria-label="Safe Sight Guardian home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 2.8 27 7v8.4c0 6.4-4.5 11-11 14-6.5-3-11-7.6-11-14V7l11-4.2Z" stroke="currentColor" stroke-width="1.7"/><path d="M7.8 15.6s3-4.2 8.2-4.2 8.2 4.2 8.2 4.2-3 4.3-8.2 4.3-8.2-4.3-8.2-4.3Z" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="15.7" r="2.2" fill="currentColor"/></svg>
         </span>
+        <span class="brand-copy"><strong>SAFE SIGHT</strong><small>GUARDIAN</small></span>
+      </a>
 
-    </div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+          <a class="nav-link" href="#recordings"><span class="nav-icon">▣</span>Recent clips<span class="nav-count" id="navRecordingCount">0</span></a>
+          <a class="nav-link" href="#camera-grid-title"><span class="nav-icon">▦</span>Cameras</a>
+        <a class="nav-link" href="#candidates"><span class="nav-icon">◈</span>Candidate review<span class="nav-count" id="navCandidateCount">0</span></a>
+        <a class="nav-link" href="#activity"><span class="nav-icon">≋</span>Event history</a>
+      </nav>
 
+      <div class="sidebar-bottom">
+        <div class="privacy-card">
+          <span class="privacy-icon">⌑</span>
+          <strong>Local footage</strong>
+          <p>Recordings are served from this computer for review.</p>
+        </div>
+        <div class="sidebar-version">SAFE SIGHT GUARDIAN <span>LOCAL INSTANCE</span></div>
+      </div>
+    </aside>
 
-    <div class="online">
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong>Command center</strong></div>
+        <div class="topbar-right">
+          <div class="connection-pill" id="backendPill"><i class="status-dot"></i><span id="backendLabel">Connecting</span></div>
+          <div class="topbar-divider"></div>
+          <span class="current-time" id="currentTime">--</span>
+          <button class="icon-button" id="refreshButton" type="button" aria-label="Refresh dashboard" title="Refresh">↻</button>
+        </div>
+      </header>
 
-        <div class="online-dot"></div>
-
-        SYSTEM ONLINE
-
-    </div>
-
-
-</header>
-
-
-
-<!-- =========================================================
-     MAIN
-========================================================= -->
-
-<main>
-
-
-    <div class="page-title">
-
-        <h2>
-            Emergency Monitoring
-        </h2>
-
-        <p>
-            Real-time AI emergency detection system
-        </p>
-
-    </div>
-
-
-
-    <div class="grid">
-
-
-        <!-- ALERT -->
-
-        <div class="card alert-card">
-
-
-            <div
-                id="alertIcon"
-                class="alert-icon safe"
-            >
-
-                ✓
-
-            </div>
-
-
-            <div
-                id="alertStatus"
-                class="alert-status safe"
-            >
-
-                ALL CLEAR
-
-            </div>
-
-
-            <div
-                id="alertMessage"
-                class="alert-message"
-            >
-
-                No emergency detected
-
-            </div>
-
-
-            <div class="details">
-
-
-                <div class="detail">
-
-                    <div class="detail-label">
-                        CAMERA
-                    </div>
-
-                    <div
-                        id="camera"
-                        class="detail-value"
-                    >
-
-                        CAMERA-01
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail">
-
-                    <div class="detail-label">
-                        LAST EVENT
-                    </div>
-
-                    <div
-                        id="lastEvent"
-                        class="detail-value"
-                    >
-
-                        None
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
+      <main id="overview" class="page-content">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span>SAFETY OPERATIONS</div>
+            <h1>Command center</h1>
+            <p>Emergency footage and AI review in one place.</p>
+          </div>
+          <div class="heading-status"><span class="pulse-dot"></span><span id="lastUpdated">Waiting for backend</span></div>
         </div>
 
-
-
-        <!-- SYSTEM STATUS -->
-
-        <div class="card">
-
-
-            <div class="card-title">
-                SYSTEM STATUS
-            </div>
-
-
-            <div class="system-row">
-
-                <div class="system-name">
-
-                    <div class="status-dot"></div>
-
-                    AI Detection
-
-                </div>
-
-                <div class="status-text">
-                    ONLINE
-                </div>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <div class="system-name">
-
-                    <div class="status-dot"></div>
-
-                    MediaPipe
-
-                </div>
-
-                <div class="status-text">
-                    ONLINE
-                </div>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <div class="system-name">
-
-                    <div class="status-dot"></div>
-
-                    Backend
-
-                </div>
-
-                <div class="status-text">
-                    ONLINE
-                </div>
-
-            </div>
-
-
-            <div class="system-row">
-
-                <div class="system-name">
-
-                    <div class="status-dot"></div>
-
-                    Camera
-
-                </div>
-
-                <div class="status-text">
-                    ONLINE
-                </div>
-
-            </div>
-
-
+        <div id="connectionBanner" class="connection-banner" role="status" hidden>
+          <span class="banner-symbol">!</span><div><strong>Backend unavailable</strong><p id="connectionMessage">Start the backend to load saved events and video.</p></div>
         </div>
 
+        <section class="metric-grid" aria-label="Project overview">
+          <article class="metric-card metric-alerts">
+            <div class="metric-top"><span class="metric-label">EMERGENCY EVENTS</span><span class="metric-icon icon-red">!</span></div>
+            <div class="metric-value" id="emergencyCount">—</div><div class="metric-foot"><span class="metric-dot red-dot"></span>Phase 1 gesture alerts</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">SAVED RECORDINGS</span><span class="metric-icon icon-blue">▣</span></div>
+            <div class="metric-value" id="recordingCount">—</div><div class="metric-foot"><span class="metric-dot blue-dot"></span>Emergency clips available</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">PHASE 2 CANDIDATES</span><span class="metric-icon icon-amber">◈</span></div>
+            <div class="metric-value" id="candidateCount">—</div><div class="metric-foot"><span class="metric-dot amber-dot"></span>Awaiting human review</div>
+          </article>
+          <article class="metric-card metric-worker">
+            <div class="metric-top"><span class="metric-label">ANALYSIS WORKER</span><span class="metric-icon icon-green">⌁</span></div>
+            <div class="metric-value metric-state" id="workerState">—</div><div class="metric-foot"><span class="metric-dot" id="workerDot"></span><span id="workerMessage">Checking Phase 2 status</span></div>
+          </article>
+        </section>
 
+        <section class="panel camera-panel" aria-labelledby="camera-grid-title">
+          <div class="panel-heading section-heading-row">
+            <div><div class="section-kicker">CAMERA NETWORK</div><h2 id="camera-grid-title">Camera overview</h2><p class="panel-subtitle">Configured cameras and connection status.</p></div>
+            <span class="small-badge" id="cameraCountBadge">1 CAMERA CONFIGURED</span>
+          </div>
+          <div class="camera-grid" id="cameraGrid" aria-live="polite"></div>
+        </section>
+
+        <section class="featured-clips-grid" id="featuredClips" aria-label="Latest emergency and candidate clips" hidden>
+          <article class="panel featured-panel" id="featuredEmergencyPanel" hidden>
+            <div class="panel-heading">
+              <div><div class="section-kicker">PHASE 1 · EMERGENCY GESTURE</div><h2>Latest emergency recording</h2></div>
+              <span class="small-badge" id="latestRecordingBadge">NO RECORDING</span>
+            </div>
+            <div class="featured-media" id="featuredMedia">
+              <video id="featuredVideo" controls preload="metadata" playsinline hidden></video>
+              <div class="empty-media" id="featuredEmpty"><div class="empty-play">▶</div><strong>No emergency recording yet</strong><span>Saved footage will appear here after an alert.</span></div>
+              <div class="media-overlay" id="mediaTimestamp" hidden></div>
+            </div>
+            <div class="recording-details">
+              <div><span class="detail-label">CAMERA</span><strong id="latestCamera">CAMERA-01</strong></div>
+              <div><span class="detail-label">RECORDED</span><strong id="latestRecordedAt">No recording</strong></div>
+              <div><span class="detail-label">ALERT STATUS</span><strong id="latestAlertStatus" class="text-muted">No event selected</strong></div>
+              <button class="text-button" id="openLatestButton" type="button" disabled>Open recording <span>↗</span></button>
+            </div>
+          </article>
+
+          <article class="panel featured-panel" id="featuredCandidatePanel" hidden>
+            <div class="panel-heading">
+              <div><div class="section-kicker">PHASE 2 · VD-MIL</div><h2>Latest candidate clip</h2></div>
+              <span class="small-badge badge-amber">NEEDS REVIEW</span>
+            </div>
+            <div class="featured-media"><video id="candidateFeaturedVideo" controls preload="metadata" playsinline></video></div>
+            <div class="recording-details featured-candidate-details">
+              <div><span class="detail-label">CLIP</span><strong id="candidateFeaturedName">—</strong></div>
+              <div><span class="detail-label">RECORDED</span><strong id="candidateFeaturedTime">—</strong></div>
+              <div><span class="detail-label">MODEL SCORE</span><strong id="candidateFeaturedScore">—</strong></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="content-grid" aria-label="System status">
+          <aside class="right-column">
+            <article class="panel detection-panel">
+              <div class="panel-heading compact-heading"><div><div class="section-kicker">DETECTION</div><h2>System status</h2></div><span class="live-tag"><i></i>LOCAL</span></div>
+              <div class="detector-row">
+                <div class="detector-icon detector-blue">✋</div><div class="detector-copy"><strong>Phase 1</strong><span>Gesture monitor · desktop app</span></div><span class="detector-status" id="phase1State">LOCAL APP</span>
+              </div>
+              <div class="detector-row">
+                <div class="detector-icon detector-amber">◈</div><div class="detector-copy"><strong>Phase 2</strong><span>Video action analysis</span></div><span class="detector-status" id="phase2State">Starting</span>
+              </div>
+              <div class="score-block">
+                <div class="score-heading"><span>Latest decision score</span><strong id="decisionScore">—</strong></div>
+                <div class="score-track"><span id="scoreBar"></span></div>
+                <div class="score-foot"><span id="scoreThreshold">Threshold —</span><span id="scoreUpdated">No analysis yet</span></div>
+              </div>
+              <p class="review-disclaimer">Phase 2 scores are model outputs. Review candidate footage before drawing conclusions.</p>
+            </article>
+
+            <article class="panel alert-summary" id="system-status">
+              <div class="section-kicker">MOST RECENT ALERT</div>
+              <div class="alert-summary-main"><span class="alert-summary-icon" id="alertSummaryIcon">✓</span><div><strong id="alertSummaryTitle">All clear</strong><span id="alertSummaryText">No emergency events recorded.</span></div></div>
+              <div class="alert-summary-meta"><span id="alertSummaryCamera">CAMERA-01</span><span id="alertSummaryTime">—</span></div>
+            </article>
+          </aside>
+        </section>
+
+        <section class="recent-clips-grid" aria-label="Recent clips">
+        <section class="panel media-library" id="recordings" aria-labelledby="recording-library-title">
+          <div class="panel-heading section-heading-row">
+            <div><div class="section-kicker">LOCAL EVIDENCE</div><h2 id="recording-library-title">Emergency recordings</h2><p class="panel-subtitle">Saved clips linked to Phase 1 events.</p></div>
+            <a class="subtle-link" href="#activity">View event history <span>→</span></a>
+          </div>
+          <div class="recording-grid" id="recordingGrid"><div class="loading-card">Loading recordings…</div></div>
+        </section>
+
+        <section class="panel candidate-panel" id="candidates">
+          <div class="panel-heading section-heading-row">
+            <div><div class="section-kicker">PHASE 2 · VD-MIL</div><h2>Candidate clips for review</h2><p class="panel-subtitle">Automated candidates are unconfirmed and require human review.</p></div>
+            <span class="small-badge badge-amber" id="candidateReviewBadge">0 TO REVIEW</span>
+          </div>
+          <div class="candidate-grid" id="candidateGrid"><div class="loading-card">Loading candidate clips…</div></div>
+        </section>
+        </section>
+
+        <section class="panel activity-panel" id="activity">
+          <div class="panel-heading section-heading-row">
+            <div><div class="section-kicker">AUDIT TRAIL</div><h2>Recent event history</h2><p class="panel-subtitle">Latest Phase 1 emergency alerts.</p></div>
+          </div>
+          <div class="activity-list" id="activityList"><div class="loading-card">Loading event history…</div></div>
+        </section>
+
+        <footer class="page-footer"><span>SAFE SIGHT GUARDIAN</span><span>Local prototype · Human review required for Phase 2 candidates</span></footer>
+      </main>
     </div>
+  </div>
 
-
-
-    <!-- =====================================================
-         VIDEO
-    ====================================================== -->
-
-    <div
-        id="videoSection"
-        class="card video-section"
-    >
-
-
-        <div class="card-title">
-            EMERGENCY EVIDENCE
-        </div>
-
-
-        <div class="video-container">
-
-
-            <div
-                id="videoTitle"
-                class="video-title"
-            >
-
-                🚨 Latest Emergency Recording
-
-            </div>
-
-
-            <video
-                id="evidenceVideo"
-                controls
-            >
-
-                Your browser does not support
-                video playback.
-
-            </video>
-
-
-        </div>
-
-
+  <div class="modal-backdrop" id="emergencyModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-heading"><div><div class="section-kicker">PHASE 1 ALERT</div><h2 id="modalTitle">Emergency detected</h2><p id="modalMessage">Review the saved recording.</p></div><button id="closeModal" class="icon-button close-button" type="button" aria-label="Close alert video">×</button></div>
+      <video id="modalVideo" controls autoplay muted playsinline></video>
+      <p id="modalNoVideo" class="modal-no-video" hidden>No saved video was attached to this event.</p>
     </div>
-
-
-
-    <!-- =====================================================
-         HISTORY
-    ====================================================== -->
-
-    <div class="card history">
-
-
-        <div class="card-title">
-            RECENT EMERGENCY EVENTS
-        </div>
-
-
-        <div id="events">
-
-
-            <p
-                style="
-                color:#778191;
-                font-size:13px;
-                "
-            >
-
-                Waiting for events...
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- =====================================================
-         PHASE 2 - CANDIDATE INCIDENTS
-    ====================================================== -->
-    <div class="card phase2-section">
-        <div class="card-title">PHASE 2 · CANDIDATE INCIDENTS</div>
-        <p class="phase2-note">
-            These are experimental VD-MIL detections, not confirmed incidents.
-            Review the video before drawing conclusions. Phase 2 candidates are
-            kept separate from Phase 1 emergency alerts.
-        </p>
-        <div id="phase2LiveStatus" class="candidate-empty">Phase 2 status: connecting...</div>
-        <div id="phase2Events">
-            <p class="candidate-empty">Loading Phase 2 candidate events...</p>
-        </div>
-    </div>
-
-
-</main>
-
-
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
-
-<script>
-
-    const API_BASE = window.location.origin;
-
-
-    // ========================================================
-    // LOAD EVENTS
-    // ========================================================
-
-    async function loadEvents() {
-
-
-        try {
-
-
-            const response =
-                await fetch(
-                    `${API_BASE}/events`
-                );
-
-
-            const events =
-                await response.json();
-
-
-            updateDashboard(events);
-
-
-        }
-
-        catch (error) {
-
-
-            console.log(
-                "Backend connection error:",
-                error
-            );
-
-
-        }
-
-    }
-
-
-
-    // ========================================================
-    // UPDATE DASHBOARD
-    // ========================================================
-
-    function updateDashboard(events) {
-
-
-        if (
-            !events ||
-            events.length === 0
-        ) {
-
-
-            document.getElementById(
-                "alertIcon"
-            ).innerHTML = "✓";
-
-
-            document.getElementById(
-                "alertStatus"
-            ).innerHTML =
-                "ALL CLEAR";
-
-
-            document.getElementById(
-                "alertMessage"
-            ).innerHTML =
-                "No emergency detected";
-
-
-            return;
-
-        }
-
-
-
-        const latest =
-            events[
-                events.length - 1
-            ];
-
-
-
-        // ====================================================
-        // ALERT
-        // ====================================================
-
-        document.getElementById(
-            "alertIcon"
-        ).innerHTML = "🚨";
-
-
-        document.getElementById(
-            "alertIcon"
-        ).className =
-            "alert-icon danger";
-
-
-        document.getElementById(
-            "alertStatus"
-        ).innerHTML =
-            "EMERGENCY DETECTED";
-
-
-        document.getElementById(
-            "alertStatus"
-        ).className =
-            "alert-status danger";
-
-
-        document.getElementById(
-            "alertMessage"
-        ).innerHTML =
-            "AI verification triggered an emergency alert";
-
-
-
-        // ====================================================
-        // CAMERA
-        // ====================================================
-
-        document.getElementById(
-            "camera"
-        ).innerHTML =
-            latest.camera;
-
-
-
-        // ====================================================
-        // TIME
-        // ====================================================
-
-        const date =
-            new Date(
-                latest.timestamp
-            );
-
-
-        document.getElementById(
-            "lastEvent"
-        ).innerHTML =
-            date.toLocaleTimeString();
-
-
-
-        // ====================================================
-        // VIDEO
-        // ====================================================
-
-        if (
-            latest.video
-        ) {
-
-
-            const videoSection =
-                document.getElementById(
-                    "videoSection"
-                );
-
-
-            const video =
-                document.getElementById(
-                    "evidenceVideo"
-                );
-
-
-            const videoURL =
-                `${API_BASE}/videos/${encodeURIComponent(latest.video)}`;
-
-
-            // Only update if changed
-
-            if (
-                video.src !== videoURL
-            ) {
-
-                video.src = videoURL;
-
-            }
-
-
-            videoSection.classList.add(
-                "active"
-            );
-
-        }
-
-
-
-        // ====================================================
-        // HISTORY
-        // ====================================================
-
-        const container =
-            document.getElementById(
-                "events"
-            );
-
-
-        container.innerHTML = "";
-
-
-        [...events]
-            .reverse()
-            .slice(0, 10)
-            .forEach(
-                event => {
-
-
-                    const date =
-                        new Date(
-                            event.timestamp
-                        );
-
-
-                    const element =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    element.className =
-                        "event";
-
-
-                    element.innerHTML = `
-
-                        <div class="event-top">
-
-                            <div class="event-name">
-
-                                🚨 EMERGENCY
-
-                            </div>
-
-                            <div class="event-time">
-
-                                ${date.toLocaleString()}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="event-info">
-
-                            Camera:
-                            ${event.camera}
-
-                            &nbsp; • &nbsp;
-
-                            Status:
-                            ${event.status}
-
-                        </div>
-
-
-                        ${
-                            event.video
-                            ?
-                            `
-                            <button
-                                class="view-button"
-                                onclick="
-                                    showVideo(
-                                        '${event.video}'
-                                    )
-                                "
-                            >
-                                ▶ View Evidence
-                            </button>
-                            `
-                            :
-                            ""
-                        }
-
-                    `;
-
-
-                    container.appendChild(
-                        element
-                    );
-
-                }
-            );
-
-    }
-
-
-
-
-    // ========================================================
-    // PHASE 2 - LOAD CANDIDATE INCIDENTS
-    // ========================================================
-
-    async function loadPhase2Status() {
-        const statusEl = document.getElementById("phase2LiveStatus");
-        if (!statusEl) return;
-        try {
-            const response = await fetch(`${API_BASE}/phase2-status`, { cache: "no-store" });
-            if (!response.ok) throw new Error("HTTP " + response.status);
-            const status = await response.json();
-            const state = String(status.state || "UNKNOWN").toUpperCase();
-            const score = Number(status.max_score || 0) * 100;
-            const updated = status.updated_at ? new Date(status.updated_at).toLocaleTimeString() : "not yet updated";
-            statusEl.textContent = `Phase 2: ${state} · latest score ${score.toFixed(1)}% · updated ${updated}. ${status.message || ""}`;
-            statusEl.style.color = state === "CANDIDATE" ? "#ffb454" : (state === "ERROR" || state === "OFFLINE" ? "#ff7272" : "#a8b6c8");
-        } catch (error) {
-            statusEl.textContent = "Phase 2 status unavailable. Check the backend and worker.";
-        }
-    }
-
-    async function loadPhase2Events() {
-        const container = document.getElementById("phase2Events");
-
-        try {
-            const response = await fetch(
-                `${API_BASE}/phase2-events`,
-                { cache: "no-store" }
-            );
-
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            const events = await response.json();
-            updatePhase2Dashboard(events);
-        } catch (error) {
-            console.log("Phase 2 events connection error:", error);
-            container.textContent =
-                "Could not load Phase 2 events. Check that the backend is running.";
-        }
-    }
-
-    function updatePhase2Dashboard(events) {
-        const container = document.getElementById("phase2Events");
-        container.replaceChildren();
-
-        if (!Array.isArray(events) || events.length === 0) {
-            const empty = document.createElement("p");
-            empty.className = "candidate-empty";
-            empty.textContent = "No Phase 2 candidate clips recorded yet.";
-            container.appendChild(empty);
-            return;
-        }
-
-        events.slice(0, 10).forEach(event => {
-            const card = document.createElement("div");
-            card.className = "candidate-event";
-
-            const top = document.createElement("div");
-            top.className = "candidate-event-top";
-
-            const titleWrap = document.createElement("div");
-            const title = document.createElement("div");
-            title.className = "candidate-name";
-            title.textContent = "⚠ CANDIDATE FLAGGED";
-            titleWrap.appendChild(title);
-
-            const review = document.createElement("div");
-            review.className = "review-badge";
-            review.textContent = "PENDING HUMAN REVIEW";
-            titleWrap.appendChild(review);
-
-            const time = document.createElement("div");
-            time.className = "candidate-time";
-            const parsedDate = event.timestamp ? new Date(event.timestamp) : null;
-            time.textContent =
-                parsedDate && !Number.isNaN(parsedDate.getTime())
-                    ? parsedDate.toLocaleString()
-                    : "Timestamp unavailable";
-
-            top.appendChild(titleWrap);
-            top.appendChild(time);
-            card.appendChild(top);
-
-            const metrics = document.createElement("div");
-            metrics.className = "candidate-metrics";
-
-            const addMetric = (label, value) => {
-                const metric = document.createElement("div");
-                metric.className = "candidate-metric";
-
-                const metricLabel = document.createElement("div");
-                metricLabel.className = "candidate-metric-label";
-                metricLabel.textContent = label;
-
-                const metricValue = document.createElement("div");
-                metricValue.className = "candidate-metric-value";
-                metricValue.textContent = value;
-
-                metric.appendChild(metricLabel);
-                metric.appendChild(metricValue);
-                metrics.appendChild(metric);
-            };
-
-            const score = Number(event.max_score);
-            addMetric(
-                "MAX MODEL SCORE",
-                Number.isFinite(score) ? score.toFixed(3) : "N/A"
-            );
-
-            const meanScore = Number(event.mean_score);
-            addMetric(
-                "MEAN MODEL SCORE",
-                event.mean_score !== null &&
-                event.mean_score !== undefined &&
-                Number.isFinite(meanScore)
-                    ? meanScore.toFixed(3)
-                    : "N/A"
-            );
-
-            addMetric(
-                "CONSECUTIVE HIGH WINDOWS",
-                event.consecutive_high_windows !== undefined
-                    ? String(event.consecutive_high_windows)
-                    : "N/A"
-            );
-
-            card.appendChild(metrics);
-
-            const note = document.createElement("div");
-            note.className = "event-info";
-            note.textContent =
-                "Experimental model result. A high score is not proof of violence.";
-            card.appendChild(note);
-
-            const clipUrl = event.clip_url;
-            if (clipUrl && typeof clipUrl === "string") {
-                const video = document.createElement("video");
-                video.className = "candidate-video";
-                video.controls = true;
-                video.preload = "metadata";
-
-                // The backend returns a local route such as /candidate-clips/name.mp4.
-                video.src = clipUrl.startsWith("http")
-                    ? clipUrl
-                    : `${API_BASE}${clipUrl.startsWith("/") ? clipUrl : "/" + clipUrl}`;
-
-                video.setAttribute("aria-label", "Candidate incident video");
-                card.appendChild(video);
-            } else {
-                const unavailable = document.createElement("p");
-                unavailable.className = "candidate-empty";
-                unavailable.textContent =
-                    "Video file is unavailable or has not been saved.";
-                card.appendChild(unavailable);
-            }
-
-            container.appendChild(card);
-        });
-    }
-
-
-    // ========================================================
-    // SHOW VIDEO
-    // ========================================================
-
-    function showVideo(
-        filename
-    ) {
-
-
-        const video =
-            document.getElementById(
-                "evidenceVideo"
-            );
-
-
-        const section =
-            document.getElementById(
-                "videoSection"
-            );
-
-
-        video.src =
-            `${API_BASE}/videos/${encodeURIComponent(filename)}`;
-
-
-        section.classList.add(
-            "active"
-        );
-
-
-        section.scrollIntoView({
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-
-
-    // ========================================================
-    // START
-    // ========================================================
-
-    loadEvents();
-    loadPhase2Events();
-    loadPhase2Status();
-
-    // Refresh Phase 1 and Phase 2 independently every 2 seconds.
-    setInterval(loadEvents, 2000);
-    setInterval(loadPhase2Events, 2000);
-    setInterval(loadPhase2Status, 2000);
-
-
-</script>
-
-
+  </div>
 </body>
-
 </html>

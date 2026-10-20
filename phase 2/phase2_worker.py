@@ -1,4 +1,4 @@
-"""NEXA Phase 2 VD-MIL worker.
+"""Safe Sight Guardian Phase 2 VD-MIL worker.
 
 Consumes clips created by Phase 1 from its existing webcam frames. It never
 opens a webcam. Candidate clips are saved for human review, not treated as
@@ -8,6 +8,7 @@ import glob
 import json
 import os
 import shutil
+import subprocess
 import time
 import traceback
 from datetime import datetime
@@ -18,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VDMIL_DIR = os.path.join(BASE_DIR, "vdmil")
 INCOMING_DIR = os.path.join(BASE_DIR, "incoming_clips")
 CANDIDATE_DIR = os.path.join(BASE_DIR, "candidate_clips")
+BROWSER_READY_DIR = os.path.join(CANDIDATE_DIR, "browser_ready")
 EVENTS_FILE = os.path.join(CANDIDATE_DIR, "events.jsonl")
 STATUS_FILE = os.path.join(CANDIDATE_DIR, "status.json")
 MODEL_FOLDER = os.path.join(VDMIL_DIR, "movinet_weights")
@@ -36,6 +38,41 @@ DISPLAY_EMA_ALPHA = 0.30
 
 os.makedirs(INCOMING_DIR, exist_ok=True)
 os.makedirs(CANDIDATE_DIR, exist_ok=True)
+os.makedirs(BROWSER_READY_DIR, exist_ok=True)
+
+
+def create_browser_ready_copy(source_path, output_path):
+    """Create an H.264 copy for browser playback; retain the original model clip."""
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        return False
+
+    temp_path = output_path + ".tmp.mp4"
+    try:
+        subprocess.run(
+            [
+                ffmpeg, "-y", "-hide_banner", "-loglevel", "error",
+                "-i", source_path, "-map", "0:v:0", "-an",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+                "-pix_fmt", "yuv420p", "-movflags", "+faststart", temp_path,
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            timeout=90,
+        )
+        if not os.path.isfile(temp_path) or os.path.getsize(temp_path) == 0:
+            raise IOError("FFmpeg created an empty browser video")
+        os.replace(temp_path, output_path)
+        return True
+    except Exception as exc:
+        try:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+        except OSError:
+            pass
+        print("Could not create browser-compatible candidate video:", exc, flush=True)
+        return False
 
 
 def write_status(**values):
@@ -80,7 +117,7 @@ def main():
     write_status(state="STARTING", activity_score=0.0, max_score=0.0,
                  raw_max_score=0.0, clip_score=0.0, mean_score=0.0,
                  message="Loading VD-MIL model")
-    print("NEXA Phase 2 worker starting on CPU.", flush=True)
+    print("Safe Sight Guardian Phase 2 worker starting on CPU.", flush=True)
     print("Model folder:", MODEL_FOLDER, flush=True)
     classifier = MovinetClassifier(MODEL_FOLDER, [DETECTOR_MODEL], device="cpu")
 
@@ -212,6 +249,11 @@ def main():
                     f"PHASE 2 VIDEO SAVE VERIFIED: exists={candidate_saved}, bytes={candidate_bytes}, path={os.path.abspath(candidate_path)}",
                     flush=True,
                 )
+                browser_video_saved = create_browser_ready_copy(
+                    candidate_path, os.path.join(BROWSER_READY_DIR, candidate_name)
+                )
+                if browser_video_saved:
+                    print("Browser-ready H.264 candidate saved.", flush=True)
                 write_status(
                     state="CANDIDATE",
                     activity_score=round(activity_score, 4),
@@ -222,6 +264,7 @@ def main():
                     candidate_save_status="SAVED",
                     candidate_file=os.path.abspath(candidate_path),
                     candidate_bytes=int(candidate_bytes),
+                    browser_video_status="READY" if browser_video_saved else "RAW_FORMAT",
                     candidate_saved_at=datetime.now().astimezone().isoformat(timespec="seconds"),
                     message="Candidate detected; video saved and verified for human review",
                 )
@@ -238,6 +281,7 @@ def main():
                     "threshold": CANDIDATE_THRESHOLD,
                     "clip_path": os.path.abspath(candidate_path),
                     "clip_filename": candidate_name,
+                    "browser_clip_filename": candidate_name if browser_video_saved else None,
                     "review_status": "pending_human_review",
                     "note": "Automated model candidate only; human review required. Score is not a calibrated probability of violence.",
                 }

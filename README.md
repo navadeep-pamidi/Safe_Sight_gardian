@@ -69,6 +69,8 @@ Additional backend and Phase 2 dependencies may be required; see the installatio
 ### Install the VD-MIL MoViNet dependency
 
 The Phase 2 action-analysis pipeline uses the MoViNet fork specified by the original VD-MIL project.
+FFmpeg must also be available on `PATH` to create H.264 copies of Phase 2 clips
+for browser playback. The original model clips are kept alongside those copies.
 
 Run this command from the project root:
 
@@ -100,9 +102,12 @@ Backend health endpoint:
 
 `http://127.0.0.1:8000/health`
 
-### 2. Start the dashboard
+### 2. Open the dashboard
 
-Open `dashboard/index.html` in your browser after starting the backend.
+With the backend running, open `http://127.0.0.1:8000/dashboard/` in your browser.
+The backend serves the page, event APIs, and saved emergency and candidate videos.
+Avoid opening `dashboard/index.html` directly or through Live Server; that sends
+API and video requests to the wrong address.
 
 ### 3. Start Phase 1
 
