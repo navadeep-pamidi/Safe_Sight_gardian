@@ -1,6 +1,6 @@
 // Keep API requests on FastAPI even when the dashboard is previewed with
 // Cursor/VS Code Live Server. The backend serves the page itself on port 8000.
-const API_BASE = window.location.port === "8000"
+const API_BASE = window.location.protocol === "http:" || window.location.protocol === "https:"
   ? window.location.origin
   : "http://127.0.0.1:8000";
 
@@ -76,9 +76,9 @@ function renderCameraGrid() {
     icon.textContent = "▣";
     icon.setAttribute("aria-hidden", "true");
     const title = document.createElement("strong");
-    title.textContent = camera.configured ? "Desktop camera feed" : "No feed configured";
+    title.textContent = camera.configured ? "Desktop camera · no web stream" : "No feed configured";
     const hint = document.createElement("small");
-    hint.textContent = camera.configured ? "Video is processed in the desktop app" : "Add a camera source to enable this view";
+    hint.textContent = camera.configured ? "This dashboard does not receive the camera video" : "Add a camera source to enable this view";
     placeholder.append(icon, title, hint);
     preview.appendChild(placeholder);
     const body = document.createElement("div");
@@ -94,7 +94,7 @@ function renderCameraGrid() {
     state.className = `camera-state${camera.configured ? " available" : ""}`;
     const dot = document.createElement("i");
     const stateText = document.createElement("span");
-    stateText.textContent = camera.configured ? "LOCAL APP" : "NOT SET UP";
+    stateText.textContent = camera.configured ? "NO WEB FEED" : "NOT SET UP";
     state.append(dot, stateText);
     body.append(name, state);
     card.append(preview, body);

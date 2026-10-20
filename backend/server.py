@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from datetime import datetime
@@ -80,7 +81,7 @@ def load_phase2_events():
 
 @app.get("/")
 def home():
-    return {"system": "Safe Sight Guardian Emergency AI", "status": "online", "dashboard": "/dashboard/"}
+    return RedirectResponse(url="/dashboard/")
 
 @app.get("/health")
 def health():
@@ -88,6 +89,8 @@ def health():
 
 @app.post("/emergency")
 def emergency_alert(data: EmergencyRequest):
+    if os.getenv("SAFE_SIGHT_PUBLIC_READ_ONLY", "false").lower() == "true":
+        raise HTTPException(status_code=403, detail="Emergency event submission is disabled in public demo mode.")
     events = load_events()
     alert = {
         "id": (max([int(e.get("id", 0)) for e in events] or [0]) + 1),

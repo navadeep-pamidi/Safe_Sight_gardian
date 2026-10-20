@@ -88,6 +88,22 @@ The original VD-MIL implementation is licensed under **CC BY-NC 4.0**. Review it
 
 ## Running the Project
 
+### Public read-only demo (Render)
+
+This repository includes a Render Blueprint in `render.yaml`. To publish the
+dashboard, push the project to GitHub, sign in to Render, choose **New → Blueprint**,
+connect this repository, and apply the Blueprint. Render builds a lightweight
+web-only environment from `requirements-deploy.txt`; the local webcam and AI
+workers are not started. The service's root URL opens the dashboard.
+
+The public demo runs in read-only mode. Local emergency footage, candidate
+clips, and event files are excluded from Git, so they are not copied to the
+host. The hosted dashboard therefore shows the interface without your local
+recorded data or live camera. Render's free web services can spin down while
+idle, and their local files do not persist across restarts. Add protected,
+persistent media storage before sharing recorded footage or relying on saved
+events online.
+
 
 
 ### 1. Start the backend
